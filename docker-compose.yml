@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  admin:
+    build:
+      context: ./admin
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+    environment:
+      - DATABASE_NAME=${POSTGRESQL_DATABASE}
+      - DATABASE_USER=${POSTGRESQL_ROOT_USER}
+      - DATABASE_PASSWORD=${POSTGRESQL_ROOT_PASSWORD}
+      - DATABASE_HOST=db
+      - DATABASE_PORT=${POSTGRESQL_PORT}
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_USER=${POSTGRESQL_ROOT_USER}
+      - POSTGRES_PASSWORD=${POSTGRESQL_ROOT_PASSWORD}
+      - POSTGRES_DB=${POSTGRESQL_DATABASE}
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRESQL_PORT}:5432"
+volumes:
+  pg_data:
