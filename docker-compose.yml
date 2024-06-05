@@ -7,14 +7,14 @@ services:
     ports:
       - 8000:8000
     depends_on:
-      - db
+      - postgres
     environment:
       - DATABASE_NAME=${POSTGRESQL_DATABASE}
       - DATABASE_USER=${POSTGRESQL_ROOT_USER}
       - DATABASE_PASSWORD=${POSTGRESQL_ROOT_PASSWORD}
       - DATABASE_HOST=db
       - DATABASE_PORT=${POSTGRESQL_PORT}
-  db:
+  postgres:
     image: postgres
     environment:
       - POSTGRES_USER=${POSTGRESQL_ROOT_USER}
@@ -24,5 +24,13 @@ services:
       - pg_data:/var/lib/postgresql/data
     ports:
       - "${POSTGRESQL_PORT}:5432"
+  mongo:
+    container_name: mongo
+    image: mongo
+    ports:
+      -27017:27017
+    volumes:
+      -./data/mongo:data/db
+
 volumes:
   pg_data:
