@@ -1,2 +1,3 @@
 /qna_env
 .env 
+/qna_engine/node_modules
