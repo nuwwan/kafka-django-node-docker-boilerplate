@@ -1,3 +1,5 @@
 /qna_env
 .env 
 /qna_engine/node_modules
+/data
+/qna_engine/dist

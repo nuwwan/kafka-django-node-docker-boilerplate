@@ -12,18 +12,18 @@ services:
       - DATABASE_NAME=${POSTGRESQL_DATABASE}
       - DATABASE_USER=${POSTGRESQL_ROOT_USER}
       - DATABASE_PASSWORD=${POSTGRESQL_ROOT_PASSWORD}
-      - DATABASE_HOST=db
+      - DATABASE_HOST=postgres
       - DATABASE_PORT=${POSTGRESQL_PORT}
 
   qna_engine:
     build:
       context: ./qna_engine
     ports:
-      - 7000:7000
+      - 4000:4000
     depends_on:
       - mongo
     environment:
-      - MONGO_URL=mongo://mongo:27017/qna_engine
+      - MONGO_URL=mongodb://mongo:27017/qna_engine
 
   postgres:
     image: postgres
@@ -40,9 +40,9 @@ services:
     container_name: mongo
     image: mongo
     ports:
-      -"${MONGO_PORT}:27017"
+      - "${MONGO_PORT}:27017"
     volumes:
-      -./data/mongo:data/db
+      - ./data/mongo:/data/db
 
 volumes:
   pg_data:
