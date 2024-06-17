@@ -1,6 +1,23 @@
 version: '3.8'
 
 services:
+  zookeeper:
+    container_name: zookeeper
+    image: wurstmeister/zookeeper
+    port:
+      - 2181:2181
+
+  kafka:
+    container_name: kafka
+    image: wurstmeister/kafka
+    ports:
+      - 9092:9092
+    volumes:
+      - ./data/kafka:/var/run/docker.sock
+    environment:
+      - KAFKA_ADVERTISED_HOST_NAME:kafka
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+
   admin:
     build:
       context: ./admin
@@ -8,12 +25,15 @@ services:
       - 8000:8000
     depends_on:
       - postgres
+      - kafka
     environment:
       - DATABASE_NAME=${POSTGRESQL_DATABASE}
       - DATABASE_USER=${POSTGRESQL_ROOT_USER}
       - DATABASE_PASSWORD=${POSTGRESQL_ROOT_PASSWORD}
       - DATABASE_HOST=postgres
       - DATABASE_PORT=${POSTGRESQL_PORT}
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - KAFKA_TOPIC=topic1
 
   qna_engine:
     build:
@@ -22,8 +42,11 @@ services:
       - 4000:4000
     depends_on:
       - mongo
+      - kafka
     environment:
       - MONGO_URL=mongodb://mongo:27017/qna_engine
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - KAFKA_TOPIC=topic1
 
   postgres:
     image: postgres
